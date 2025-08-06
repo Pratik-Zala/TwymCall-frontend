@@ -10,6 +10,8 @@ import DraftEmail from './components/DraftEmail.vue';
 import ReviewClientRequest from './components/ReviewClientRequest.vue';
 import ReviewDraftDocument from './components/ReviewDraftDocument.vue';
 import '../dashboard-styles.css';
+import './index.css';
+
 
 const routes = [
   {
