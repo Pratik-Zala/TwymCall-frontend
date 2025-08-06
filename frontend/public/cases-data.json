@@ -1,0 +1,93 @@
+[
+  {
+    "id": "ubs",
+    "accountName": "UBS",
+    "accountHead": "Leslie Alexander",
+    "isExpanded": false,
+    "cases": []
+  },
+  {
+    "id": "boa",
+    "accountName": "Bank of America",
+    "accountHead": "Jimmy Anderson",
+    "isExpanded": true,
+    "cases": [
+      {
+        "id": "case1",
+        "matter": "Commercial Contract",
+        "contact": "Jenny Wilson",
+        "date": "12 Jan 2025",
+        "team": [],
+        "progress": "Contract & WC Request",
+        "progressBadgeClass": "contract-review",
+        "progressPercent": 0
+      },
+      {
+        "id": "case2",
+        "matter": "Property Contract",
+        "contact": "Jane Cooper",
+        "date": "12 Jan 2025",
+        "team": [
+           "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face",
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face"
+
+        ],
+        "teamMore": 2,
+        "progress": "Content Summary",
+        "progressBadgeClass": "content-summary",
+        "progressPercent": 60
+      },
+      {
+        "id": "case3",
+        "matter": "Commercial Contract",
+        "contact": "Theresa Webb",
+        "date": "12 Jan 2025",
+        "team": [
+          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face",
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face"
+        ],
+        "teamMore": 2,
+        "progress": "Content Summary",
+        "progressBadgeClass": "content-summary",
+        "progressPercent": 60
+      },
+      {
+        "id": "case4",
+        "matter": "Commercial Contract",
+        "contact": "Devon Lane",
+        "date": "12 Jan 2025",
+        "team": [
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face"
+        ],
+        "teamMore": 1,
+        "progress": "Content Summary",
+        "progressBadgeClass": "content-summary",
+        "progressPercent": 60
+      },
+      {
+        "id": "case5",
+        "matter": "Commercial Contract",
+        "contact": "Ralph Edwards",
+        "date": "12 Jan 2025",
+        "team": [],
+        "progress": "Content Summary",
+        "progressBadgeClass": "content-summary",
+        "progressPercent": 60
+      },
+      {
+        "id": "case6",
+        "matter": "Commercial Contract",
+        "contact": "Jerome Bell",
+        "date": "12 Jan 2025",
+        "team": [
+          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face",
+          "https://images.unsplash.com/photo-1494790108755-2616b612045b?w=24&h=24&fit=crop&crop=face"
+        ],
+        "teamMore": 2,
+        "progress": "Content Summary",
+        "progressBadgeClass": "content-summary",
+        "progressPercent": 60
+      }
+    ]
+  }
+] 

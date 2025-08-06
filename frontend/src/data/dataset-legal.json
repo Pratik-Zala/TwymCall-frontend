@@ -1,0 +1,551 @@
+{
+    "clusters": [
+        {
+            "key": "litigation",
+            "label": "Litigation",
+            "color": "#d50000"
+        },
+        {
+            "key": "corporate",
+            "label": "Corporate Law",
+            "color": "#0091ea"
+        },
+        {
+            "key": "ip",
+            "label": "Intellectual Property",
+            "color": "#00c853"
+        },
+        {
+            "key": "real_estate",
+            "label": "Real Estate Law",
+            "color": "#ffab00"
+        },
+        {
+            "key": "regulatory",
+            "label": "Regulatory & Compliance",
+            "color": "#6200ea"
+        },
+        {
+            "key": "environmental",
+            "label": "Environmental Law",
+            "color": "#4caf50"
+        },
+        {
+            "key": "bankruptcy",
+            "label": "Bankruptcy",
+            "color": "#ff6f00"
+        },
+        {
+            "key": "tax",
+            "label": "Tax Law",
+            "color": "#4e342e"
+        },
+        {
+            "key": "health",
+            "label": "Health Law",
+            "color": "#1b5e20"
+        }
+    ],
+    "tags": [
+        {
+            "key": "case",
+            "image": "technology.svg"
+        },
+        {
+            "key": "court",
+            "image": "technology.svg"
+        },
+        {
+            "key": "judge",
+            "image": "technology.svg"
+        },
+        {
+            "key": "firm",
+            "image": "technology.svg"
+        },
+        {
+            "key": "client",
+            "image": "technology.svg"
+        },
+        {
+            "key": "statute",
+            "image": "technology.svg"
+        },
+        {
+            "key": "contract",
+            "image": "technology.svg"
+        },
+        {
+            "key": "patent",
+            "image": "technology.svg"
+        }
+    ],
+    "nodes": [
+        {
+            "key": "US_Bankruptcy_Court",
+            "label": "U.S. Bankruptcy Court",
+            "tag": "court",
+            "cluster": "bankruptcy",
+            "x": 150,
+            "y": 400,
+            "score": 20
+        },
+        {
+            "key": "Weil_Gotshal",
+            "label": "Weil, Gotshal & Manges",
+            "tag": "firm",
+            "cluster": "bankruptcy",
+            "x": -50,
+            "y": 400,
+            "score": 25
+        },
+        {
+            "key": "IRS",
+            "label": "Internal Revenue Service",
+            "tag": "court",
+            "cluster": "tax",
+            "x": 300,
+            "y": -400,
+            "score": 18
+        },
+        {
+            "key": "Tax_Cuts_Jobs_Act",
+            "label": "Tax Cuts and Jobs Act",
+            "tag": "statute",
+            "cluster": "tax",
+            "x": 400,
+            "y": -350,
+            "score": 10
+        },
+        {
+            "key": "HHS",
+            "label": "Dept. of Health & Human Services",
+            "tag": "court",
+            "cluster": "health",
+            "x": -500,
+            "y": -300,
+            "score": 17
+        },
+        {
+            "key": "HIPAA",
+            "label": "HIPAA Act",
+            "tag": "statute",
+            "cluster": "health",
+            "x": -600,
+            "y": -250,
+            "score": 12
+        },
+        {
+            "key": "Marbury_v_Madison",
+            "label": "Marbury v. Madison",
+            "tag": "case",
+            "cluster": "litigation",
+            "x": 100,
+            "y": 50,
+            "score": 20
+        },
+        {
+            "key": "SCOTUS",
+            "label": "Supreme Court of the U.S.",
+            "tag": "court",
+            "cluster": "litigation",
+            "x": 150,
+            "y": 150,
+            "score": 25
+        },
+        {
+            "key": "John_Marshall",
+            "label": "Chief Justice John Marshall",
+            "tag": "judge",
+            "cluster": "litigation",
+            "x": 50,
+            "y": 150,
+            "score": 18
+        },
+        {
+            "key": "Apple_v_Samsung",
+            "label": "Apple v. Samsung",
+            "tag": "case",
+            "cluster": "ip",
+            "x": -100,
+            "y": -50,
+            "score": 22
+        },
+        {
+            "key": "Apple_Inc",
+            "label": "Apple Inc.",
+            "tag": "client",
+            "cluster": "ip",
+            "x": -150,
+            "y": -150,
+            "score": 15
+        },
+        {
+            "key": "Samsung_Elec",
+            "label": "Samsung Electronics",
+            "tag": "client",
+            "cluster": "ip",
+            "x": -50,
+            "y": -150,
+            "score": 14
+        },
+        {
+            "key": "USPTO",
+            "label": "U.S. Patent & Trademark Office",
+            "tag": "court",
+            "cluster": "ip",
+            "x": -100,
+            "y": 50,
+            "score": 16
+        },
+        {
+            "key": "Skadden_Arps",
+            "label": "Skadden, Arps",
+            "tag": "firm",
+            "cluster": "corporate",
+            "x": 200,
+            "y": -100,
+            "score": 28
+        },
+        {
+            "key": "Wachtell_Lipton",
+            "label": "Wachtell, Lipton",
+            "tag": "firm",
+            "cluster": "corporate",
+            "x": 250,
+            "y": 0,
+            "score": 26
+        },
+        {
+            "key": "Twitter_v_Musk",
+            "label": "Twitter v. Musk",
+            "tag": "case",
+            "cluster": "corporate",
+            "x": 300,
+            "y": -100,
+            "score": 19
+        },
+        {
+            "key": "Elon_Musk",
+            "label": "Elon Musk",
+            "tag": "client",
+            "cluster": "corporate",
+            "x": 350,
+            "y": -200,
+            "score": 12
+        },
+        {
+            "key": "Twitter_Inc",
+            "label": "Twitter, Inc.",
+            "tag": "client",
+            "cluster": "corporate",
+            "x": 350,
+            "y": 0,
+            "score": 11
+        },
+        {
+            "key": "Merger_Agreement",
+            "label": "Twitter Merger Agreement",
+            "tag": "contract",
+            "cluster": "corporate",
+            "x": 400,
+            "y": -100,
+            "score": 10
+        },
+        {
+            "key": "SEC",
+            "label": "Securities and Exchange Commission",
+            "tag": "court",
+            "cluster": "regulatory",
+            "x": 0,
+            "y": -250,
+            "score": 17
+        },
+        {
+            "key": "Sarbanes_Oxley",
+            "label": "Sarbanes-Oxley Act",
+            "tag": "statute",
+            "cluster": "regulatory",
+            "x": 100,
+            "y": -250,
+            "score": 13
+        },
+        {
+            "key": "Kirkland_Ellis",
+            "label": "Kirkland & Ellis",
+            "tag": "firm",
+            "cluster": "litigation",
+            "x": -250,
+            "y": 200,
+            "score": 27
+        },
+        {
+            "key": "Jones_v_Smith_Lease",
+            "label": "Jones v. Smith Lease Dispute",
+            "tag": "case",
+            "cluster": "real_estate",
+            "x": -300,
+            "y": -100,
+            "score": 8
+        },
+        {
+            "key": "Commercial_Lease",
+            "label": "Commercial Lease Agreement",
+            "tag": "contract",
+            "cluster": "real_estate",
+            "x": -350,
+            "y": -200,
+            "score": 7
+        },
+        {
+            "key": "Generic_Pharma_Patent",
+            "label": "Generic Pharma Patent Case",
+            "tag": "case",
+            "cluster": "ip",
+            "x": -200,
+            "y": 100,
+            "score": 15
+        },
+        {
+            "key": "Patent_789",
+            "label": "U.S. Patent 7,890,123",
+            "tag": "patent",
+            "cluster": "ip",
+            "x": -250,
+            "y": 0,
+            "score": 5
+        },
+        {
+            "key": "Latham_Watkins",
+            "label": "Latham & Watkins",
+            "tag": "firm",
+            "cluster": "litigation",
+            "x": -300,
+            "y": 250,
+            "score": 26
+        },
+        {
+            "key": "Microsoft_v_DoJ",
+            "label": "Microsoft v. DoJ",
+            "tag": "case",
+            "cluster": "litigation",
+            "x": -200,
+            "y": 300,
+            "score": 21
+        },
+        {
+            "key": "Microsoft",
+            "label": "Microsoft Corp.",
+            "tag": "client",
+            "cluster": "litigation",
+            "x": -100,
+            "y": 250,
+            "score": 17
+        },
+        {
+            "key": "Goldman_Sachs",
+            "label": "Goldman Sachs",
+            "tag": "firm",
+            "cluster": "corporate",
+            "x": 450,
+            "y": 50,
+            "score": 29
+        },
+        {
+            "key": "IPO_Filing",
+            "label": "Uber IPO Filing",
+            "tag": "contract",
+            "cluster": "corporate",
+            "x": 500,
+            "y": -50,
+            "score": 9
+        },
+        {
+            "key": "Uber",
+            "label": "Uber Technologies, Inc.",
+            "tag": "client",
+            "cluster": "corporate",
+            "x": 550,
+            "y": 50,
+            "score": 13
+        },
+        {
+            "key": "Google_v_Oracle",
+            "label": "Google v. Oracle",
+            "tag": "case",
+            "cluster": "ip",
+            "x": -400,
+            "y": 100,
+            "score": 23
+        },
+        {
+            "key": "Google",
+            "label": "Google LLC",
+            "tag": "client",
+            "cluster": "ip",
+            "x": -450,
+            "y": 0,
+            "score": 16
+        },
+        {
+            "key": "Oracle",
+            "label": "Oracle Corporation",
+            "tag": "client",
+            "cluster": "ip",
+            "x": -450,
+            "y": 200,
+            "score": 14
+        },
+        {
+            "key": "FinCEN",
+            "label": "Financial Crimes Enforcement Network",
+            "tag": "court",
+            "cluster": "regulatory",
+            "x": 200,
+            "y": -300,
+            "score": 15
+        }
+    ],
+    "edges": [
+        [
+            "Marbury_v_Madison",
+            "SCOTUS"
+        ],
+        [
+            "Marbury_v_Madison",
+            "John_Marshall"
+        ],
+        [
+            "John_Marshall",
+            "SCOTUS"
+        ],
+        [
+            "Apple_v_Samsung",
+            "Apple_Inc"
+        ],
+        [
+            "Apple_v_Samsung",
+            "Samsung_Elec"
+        ],
+        [
+            "Apple_v_Samsung",
+            "USPTO"
+        ],
+        [
+            "Patent_789",
+            "USPTO"
+        ],
+        [
+            "Generic_Pharma_Patent",
+            "Patent_789"
+        ],
+        [
+            "Generic_Pharma_Patent",
+            "Kirkland_Ellis"
+        ],
+        [
+            "Twitter_v_Musk",
+            "Elon_Musk"
+        ],
+        [
+            "Twitter_v_Musk",
+            "Twitter_Inc"
+        ],
+        [
+            "Twitter_v_Musk",
+            "Wachtell_Lipton"
+        ],
+        [
+            "Twitter_v_Musk",
+            "Skadden_Arps"
+        ],
+        [
+            "Twitter_v_Musk",
+            "Merger_Agreement"
+        ],
+        [
+            "Merger_Agreement",
+            "Elon_Musk"
+        ],
+        [
+            "Merger_Agreement",
+            "Twitter_Inc"
+        ],
+        [
+            "Skadden_Arps",
+            "Elon_Musk"
+        ],
+        [
+            "Wachtell_Lipton",
+            "Twitter_Inc"
+        ],
+        [
+            "Sarbanes_Oxley",
+            "SEC"
+        ],
+        [
+            "Twitter_Inc",
+            "SEC"
+        ],
+        [
+            "Jones_v_Smith_Lease",
+            "Commercial_Lease"
+        ],
+        [
+            "Kirkland_Ellis",
+            "Samsung_Elec"
+        ],
+        [
+            "Microsoft_v_DoJ",
+            "Microsoft"
+        ],
+        [
+            "Microsoft_v_DoJ",
+            "Latham_Watkins"
+        ],
+        [
+            "Latham_Watkins",
+            "Microsoft"
+        ],
+        [
+            "IPO_Filing",
+            "Goldman_Sachs"
+        ],
+        [
+            "IPO_Filing",
+            "Uber"
+        ],
+        [
+            "Goldman_Sachs",
+            "Uber"
+        ],
+        [
+            "Google_v_Oracle",
+            "Google"
+        ],
+        [
+            "Google_v_Oracle",
+            "Oracle"
+        ],
+        [
+            "Google_v_Oracle",
+            "USPTO"
+        ],
+        [
+            "Sarbanes_Oxley",
+            "FinCEN"
+        ],
+        [
+            "Tax_Cuts_Jobs_Act",
+            "IRS"
+        ],
+        [
+            "HIPAA",
+            "HHS"
+        ],
+        [
+            "Goldman_Sachs",
+            "IRS"
+        ]
+    ]
+}
