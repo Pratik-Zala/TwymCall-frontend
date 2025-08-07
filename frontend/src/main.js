@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import Dashboard from './components/Dashboard.vue';
 import ComingSoon from './components/ComingSoon.vue';
+import Training from './components/Training.vue';
 import MainLayout from './layouts/MainLayout.vue';
 import Simulator from './components/Simulator.vue';
 import ClientRequest from './components/ClientRequest.vue';
@@ -11,6 +12,7 @@ import ReviewClientRequest from './components/ReviewClientRequest.vue';
 import ReviewDraftDocument from './components/ReviewDraftDocument.vue';
 import '../dashboard-styles.css';
 import './index.css';
+import PopUp from './components/PopUp.vue';
 
 
 const routes = [
@@ -31,7 +33,12 @@ const routes = [
       {
         path: 'simulator/training',
         name: 'Training',
-        component: ComingSoon,
+        component: Training,
+      },
+      {
+        path:'popup',
+        name:'PopUp',
+        component: PopUp,
       },
       {
         path: 'simulator/practice',

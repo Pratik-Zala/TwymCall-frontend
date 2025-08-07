@@ -1,8 +1,8 @@
 <template>
   <div class="main-layout">
     <Sidebar />
-    <div class="main-area">
-      <Header />
+    <div class="main-area w-[calc(100%-300px)]">
+      <Header/>
       <main class="main-content">
         <router-view />
       </main>
