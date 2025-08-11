@@ -196,47 +196,49 @@ export default {
   padding: 24px;
   max-width: 800px;
   margin: 0 auto;
-  font-family: 'Inter', sans-serif;
+  background: #f9fafb;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .header-section {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 8px;
+  color: #111827;
+  margin-bottom: 6px;
 }
 
 .page-description {
-  font-size: 16px;
-  color: #6B7280;
+  font-size: 14px;
+  color: #6b7280;
   margin: 0;
 }
 
 .upload-section {
   background: white;
-  border: 1px solid #E5E7EB;
-  border-radius: 12px;
-  padding: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
 }
 
 .upload-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .file-upload-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .file-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #374151;
 }
@@ -255,138 +257,136 @@ export default {
 .file-input-label {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border: 2px dashed #D1D5DB;
-  border-radius: 8px;
-  background: #F9FAFB;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+  background: #f9fafb;
   cursor: pointer;
-  transition: all 0.2s ease;
-  color: #6B7280;
-  font-size: 14px;
+  color: #6b7280;
+  font-size: 13px;
 }
 
 .file-input-label:hover {
-  border-color: #9CA3AF;
-  background: #F3F4F6;
+  border-color: #9ca3af;
+  background: #f3f4f6;
 }
 
 .upload-icon {
-  width: 20px;
-  height: 20px;
-  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
 }
 
 .upload-button-section {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 .upload-button {
-  background: #3B82F6;
+  background: #2563eb;
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
   width: 100%;
 }
 
 .upload-button:hover:not(:disabled) {
-  background: #2563EB;
+  background: #1d4ed8;
 }
 
 .upload-button:disabled {
-  background: #9CA3AF;
+  background: #9ca3af;
   cursor: not-allowed;
 }
 
 .upload-button.loading {
-  background: #6B7280;
+  background: #6b7280;
 }
 
 .result-section {
-  margin-top: 24px;
-  padding: 20px;
-  border-radius: 8px;
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 6px;
 }
 
 .success-message {
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
 }
 
 .error-message {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
 }
 
 .success-header,
 .error-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .success-header h3 {
   color: #166534;
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .error-header h3 {
-  color: #DC2626;
+  color: #dc2626;
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .result-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .result-details p {
-  margin: 8px 0;
+  margin: 6px 0;
   color: #166534;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .summaries {
-  margin-top: 16px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .summary-item {
   background: white;
-  padding: 16px;
-  border-radius: 6px;
-  border: 1px solid #BBF7D0;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #bbf7d0;
 }
 
 .summary-item h4 {
   color: #166534;
-  margin: 0 0 8px 0;
-  font-size: 14px;
+  margin: 0 0 6px 0;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .summary-item p {
   color: #374151;
   margin: 0;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .error-message p {
-  color: #DC2626;
+  color: #dc2626;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 </style>
