@@ -1,0 +1,95 @@
+name: Deploy the TwymX app to the UAT instance
+
+on:
+  push:
+    branches:
+      - uat
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on:
+      group: twymx-uat
+      labels: docker
+    environment:
+      name: uat
+      url: https://docker.dev.twymx.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate .env file for the backend
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          directory: backend
+          sort_keys: true
+          envkey_BACKEND_URL: ${{ vars.BACKEND_URL }}
+          envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          envkey_ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+          envkey_FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          envkey_FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          envkey_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          envkey_FRONTEND_URL: ${{ vars.FRONTEND_URL }}
+          envkey_GOOGLE_GEMINI_API_KEY: ${{ secrets.GOOGLE_GEMINI_API_KEY }}
+          envkey_HUBSPOT_ACCESS_TOKEN: ${{ secrets.HUBSPOT_ACCESS_TOKEN }}
+          envkey_HUBSPOT_CLIENT_SECRET: ${{ secrets.HUBSPOT_CLIENT_SECRET }}
+          envkey_JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          envkey_JIRA_HOST: ${{ vars.JIRA_HOST }}
+          envkey_JIRA_PROJECT_KEY: ${{ vars.JIRA_PROJECT_KEY }}
+          envkey_JIRA_USER_EMAIL: ${{ vars.JIRA_USER_EMAIL }}
+          envkey_JWT_EXPIRES_IN: 7d
+          envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          envkey_LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+          envkey_LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          envkey_LINKEDIN_REDIRECT_URI: ${{ vars.API_BASE_URL }}/linkedin/auth/callback
+          envkey_MICROSOFT_CLIENT_ID: ${{ secrets.MICROSOFT_CLIENT_ID }}
+          envkey_MICROSOFT_CLIENT_SECRET: ${{ secrets.MICROSOFT_CLIENT_SECRET }}
+          envkey_MICROSOFT_REDIRECT_URI: ${{ vars.API_BASE_URL }}/microsoft/auth/callback
+          envkey_MICROSOFT_SENDER_CLIENT_ID: ${{ secrets.MICROSOFT_SENDER_CLIENT_ID }}
+          envkey_MICROSOFT_SENDER_CLIENT_SECRET: ${{ secrets.MICROSOFT_SENDER_CLIENT_SECRET }}
+          envkey_MICROSOFT_SENDER_EMAIL: ${{ vars.MICROSOFT_SENDER_EMAIL }}
+          envkey_MICROSOFT_SENDER_TENANT_ID: ${{ vars.MICROSOFT_SENDER_TENANT_ID }}
+          envkey_MICROSOFT_SSO_REDIRECT_URI: ${{ vars.API_BASE_URL }}/auth/microsoft/callback
+          envkey_MICROSOFT_TENANT_ID: ${{ vars.MICROSOFT_TENANT_ID }}
+          envkey_MICROSOFT_WEBHOOK_SECRET: ${{ secrets.MICROSOFT_WEBHOOK_SECRET }}
+          envkey_PORT: 8000
+          envkey_RP_ID: ${{ vars.RP_ID }}
+          envkey_RP_NAME: ${{ vars.RP_NAME }}
+          envkey_SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          envkey_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          envkey_TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          envkey_TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          envkey_TWILIO_MESSAGING_SERVICE_SID: ${{ vars.TWILIO_MESSAGING_SERVICE_SID }}
+          envkey_TWILIO_PHONE_NUMBER: ${{ vars.TWILIO_PHONE_NUMBER }}
+          envkey_TWITTER_CLIENT_ID: ${{ secrets.TWITTER_CLIENT_ID }}
+          envkey_TWITTER_CLIENT_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
+          envkey_TWITTER_REDIRECT_URI: ${{ vars.API_BASE_URL }}/api/twitter/callback
+          envkey_UNIPILE_ACCESS_TOKEN: ${{ secrets.UNIPILE_ACCESS_TOKEN }}
+          envkey_UNIPILE_BASE_URL: ${{ vars.UNIPILE_BASE_URL }}
+          envkey_WHATSAPP_ACCESS_TOKEN: ${{ secrets.WHATSAPP_ACCESS_TOKEN }}
+          envkey_WHATSAPP_PHONE_NUMBER_ID: ${{ vars.WHATSAPP_PHONE_NUMBER_ID }}
+          envkey_WHATSAPP_TEMPLATE_NAME: ${{ vars.WHATSAPP_TEMPLATE_NAME }}
+          envkey_WHATSAPP_VERIFY_TOKEN: ${{ secrets.WHATSAPP_VERIFY_TOKEN }}
+
+      - name: Generate .env file for the frontend
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          directory: frontend
+          sort_keys: true
+          envkey_VITE_API_BASE_URL: ${{ vars.API_BASE_URL }}
+          envkey_VITE_SOCKET_URL: ${{ vars.SOCKET_URL }}
+          envkey_VITE_ENVIRONMENT: production
+          envkey_VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          envkey_VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          envkey_VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          envkey_VITE_FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          envkey_VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          envkey_VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          envkey_VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
+          envkey_VITE_FIREBASE_VAPID_KEY: ${{ vars.FIREBASE_VAPID_KEY }}
+
+      - name: Buid and run the app
+        id: compose-up
+        run: |
+          docker compose -f docker-compose.yaml up --build --remove-orphans -d
