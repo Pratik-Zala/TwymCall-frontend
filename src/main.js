@@ -10,6 +10,7 @@ import ClientRequest from './components/ClientRequest.vue';
 import DraftEmail from './components/DraftEmail.vue';
 import ReviewClientRequest from './components/ReviewClientRequest.vue';
 import ReviewDraftDocument from './components/ReviewDraftDocument.vue';
+import TrainingAdmin from './components/TrainingAdmin.vue';
 import '../dashboard-styles.css';
 import './index.css';
 import PopUp from './components/PopUp.vue';
@@ -48,7 +49,7 @@ const routes = [
       {
         path: 'simulator/training-admin',
         name: 'TrainingAdmin',
-        component: ComingSoon,
+        component: TrainingAdmin,
       },
       {
         path: 'production',
@@ -108,4 +109,4 @@ router.beforeEach((to, from, next) => {
 // Create and mount the app
 const app = createApp(App);
 app.use(router);
-app.mount('#app'); 
+app.mount('#app');
