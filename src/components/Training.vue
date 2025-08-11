@@ -88,7 +88,7 @@
           <!-- Chat History -->
           <div v-if="chatHistory.length > 0" class="mb-4">
             <p class="text-[12px] text-[#5A5A5A] mb-3 font-semibold">Conversation:</p>
-            <div class="max-h-48 overflow-y-auto space-y-3 pr-2" style="scrollbar-width: thin;">
+            <div class="overflow-y-auto space-y-3 pr-2" style="scrollbar-width: thin;">
               <div v-for="(chat, index) in chatHistory" :key="index" class="chat-bubble"
                    :class="chat.type === 'user' ? 'user-message' : 'ai-message'">
                 <div class="message-header">
