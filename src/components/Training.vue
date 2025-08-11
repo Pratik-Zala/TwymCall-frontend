@@ -87,12 +87,15 @@
 
           <!-- Chat History -->
           <div v-if="chatHistory.length > 0" class="mb-4">
-            <p class="text-[12px] text-[#5A5A5A] mb-2 font-semibold">Chat History:</p>
-            <div class="max-h-32 overflow-y-auto space-y-2">
-              <div v-for="(chat, index) in chatHistory" :key="index" class="p-2 rounded text-[12px]"
-                   :class="chat.type === 'user' ? 'bg-blue-50 text-blue-800' : 'bg-gray-50 text-gray-800'">
-                <span class="font-semibold">{{ chat.type === 'user' ? 'You' : 'AI' }}:</span>
-                <span class="ml-1">{{ chat.message }}</span>
+            <p class="text-[12px] text-[#5A5A5A] mb-3 font-semibold">Conversation:</p>
+            <div class="max-h-48 overflow-y-auto space-y-3 pr-2" style="scrollbar-width: thin;">
+              <div v-for="(chat, index) in chatHistory" :key="index" class="chat-bubble"
+                   :class="chat.type === 'user' ? 'user-message' : 'ai-message'">
+                <div class="message-header">
+                  <span class="sender-name">{{ chat.type === 'user' ? 'You' : 'AI Assistant' }}</span>
+                  <span class="timestamp">{{ formatTime(chat.timestamp) }}</span>
+                </div>
+                <div class="message-content">{{ chat.message }}</div>
               </div>
             </div>
           </div>
@@ -111,9 +114,29 @@
           </div>
         </div>
       </div>
-      <div class="mb-4 px-4 flex items-center">
-        <input class="border border-[#E5E5E5] w-full rounded-[16px] px-2 py-1 outline-none mr-2" type="text" placeholder="Enter your script" v-model="userMessage" @keyup.enter="sendMessage" :disabled="isSending || !sessionId">
-        <button @click="sendMessage" :disabled="isSending || !sessionId" class="button cursor-pointer !px-[25px] !py-[4px] rounded-lg border border-[#E5E5E5]">Send</button>
+      <div class="mb-4 px-4">
+        <div class="flex items-center space-x-3">
+          <input 
+            class="flex-1 border border-[#E5E5E5] rounded-[20px] px-4 py-2.5 text-[14px] outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200 transition-all" 
+            type="text" 
+            placeholder="Type your message..." 
+            v-model="userMessage" 
+            @keyup.enter="sendMessage" 
+            :disabled="isSending || !sessionId"
+          >
+          <button 
+            @click="sendMessage" 
+            :disabled="isSending || !sessionId || !userMessage.trim()" 
+            class="send-button"
+            :class="{ 'loading': isSending }"
+          >
+            <span v-if="!isSending">Send</span>
+            <span v-else>...</span>
+          </button>
+        </div>
+        <div v-if="!sessionId" class="mt-2 text-[11px] text-red-500">
+          Please upload files in Training Admin to start chatting
+        </div>
       </div>
 
     </div>
@@ -183,6 +206,12 @@ export default {
       }
     ]);
 
+    const formatTime = (timestamp) => {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
     const sendMessage = async () => {
       if (!userMessage.value.trim() || !sessionId.value || isSending.value) {
         return;
@@ -205,7 +234,7 @@ export default {
 
         const result = await response.json();
 
-        if (response.ok) {
+        if (response.ok && result.success) {
           // Add user message to chat history
           chatHistory.value.push({
             type: 'user',
@@ -213,18 +242,20 @@ export default {
             timestamp: new Date()
           });
 
-          // Add AI response to chat history
+          // Add AI response to chat history - handle the new structure
+          const aiResponse = result.data?.response || result.response || result.message || 'No response received';
           chatHistory.value.push({
             type: 'assistant',
-            message: result.response || result.message || 'No response received',
-            timestamp: new Date()
+            message: aiResponse,
+            timestamp: result.data?.timestamp ? new Date(result.data.timestamp) : new Date()
           });
 
           // Clear input
           userMessage.value = '';
         } else {
           console.error('Chat API error:', result);
-          alert('Error sending message: ' + (result.message || 'Unknown error'));
+          const errorMsg = result.message || result.data?.message || 'Unknown error occurred';
+          alert('Error sending message: ' + errorMsg);
         }
       } catch (error) {
         console.error('Network error:', error);
@@ -248,7 +279,8 @@ export default {
       userMessage,
       isSending,
       chatHistory,
-      sendMessage
+      sendMessage,
+      formatTime
     };
   }
 };
@@ -274,5 +306,81 @@ export default {
 /* Optional: For horizontal scrollbars */
 ::-webkit-scrollbar-horizontal {
   height: 8px;
+}
+
+/* Chat bubble styles */
+.chat-bubble {
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.user-message {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  margin-left: 20px;
+  border-bottom-right-radius: 4px;
+}
+
+.ai-message {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  margin-right: 20px;
+  border-bottom-left-radius: 4px;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.sender-name {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.timestamp {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.message-content {
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.send-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 60px;
+}
+
+.send-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+}
+
+.send-button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.send-button.loading {
+  background: #6b7280;
 }
 </style>
