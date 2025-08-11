@@ -173,10 +173,30 @@ export default {
   justify-content: center;
   padding: 20px 8px;
   cursor: pointer;
+  position: relative;
 }
 
 .sidebar.collapsed .sidebar-header:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar.collapsed .sidebar-header::after {
+  content: "→";
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.sidebar.collapsed .sidebar-header:hover::after {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .logo {
