@@ -137,7 +137,7 @@ export default {
         formData.append('persona', personaFile.value)
         formData.append('context', contextFile.value)
 
-        const response = await fetch('http://twymcall.dev.twymx.com/api/upload/documents', {
+        const response = await fetch('https://twymcall.dev.twymx.com/api/upload/documents', {
           method: 'POST',
           body: formData
         })
