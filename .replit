@@ -1,16 +1,17 @@
+
 modules = ["nodejs-20"]
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "npm run start:backend"]
-build = ["sh", "-c", "npm run build:all"]
+run = ["sh", "-c", "npm run build && npm run preview -- --host 0.0.0.0 --port 5000"]
+build = ["sh", "-c", "npm run build"]
 
 deploymentTarget = "cloudrun"
 
 [[ports]]
-localPort = 3000
+localPort = 5000
 externalPort = 80
 
 [workflows]
@@ -23,4 +24,4 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd frontend && npm install && npm run build && cd ../backend && npm install && npm run dev"
+args = "npm install && npm run dev -- --host 0.0.0.0 --port 5000"
