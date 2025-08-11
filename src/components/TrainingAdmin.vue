@@ -149,6 +149,12 @@ export default {
             success: true,
             data: result
           }
+          
+          // Store session ID in localStorage for use in Training component
+          if (result.session_id) {
+            localStorage.setItem('training_session_id', result.session_id)
+          }
+          
           // Reset file inputs after successful upload
           personaFile.value = null
           contextFile.value = null
