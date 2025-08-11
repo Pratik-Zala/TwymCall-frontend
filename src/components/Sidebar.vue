@@ -181,7 +181,7 @@ export default {
 }
 
 .sidebar.collapsed .sidebar-header::after {
-  content: "→";
+  content: "»";
   color: white;
   font-size: 18px;
   font-weight: bold;
