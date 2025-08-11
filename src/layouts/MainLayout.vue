@@ -24,6 +24,8 @@ export default {
 
 <style scoped>
 .main-layout {
+  height: 100%;
+  min-height: 100vh;
   display: flex;
   padding: 20px;
   background-color:#F5F5F5;
