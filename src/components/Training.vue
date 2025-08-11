@@ -227,8 +227,8 @@ export default {
     };
 
     const fetchConversation = async () => {
-      if (!conversationId.value) {
-        conversationError.value = 'No conversation ID available';
+      if (!sessionId.value) {
+        conversationError.value = 'No session ID available';
         return;
       }
 
@@ -236,7 +236,7 @@ export default {
       conversationError.value = '';
 
       try {
-        const response = await fetch(`https://twymcall.dev.twymx.com/api/conversation/${conversationId.value}`, {
+        const response = await fetch(`https://twymcall.dev.twymx.com/api/conversation/${sessionId.value}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -247,23 +247,29 @@ export default {
 
         if (response.ok && result.success) {
           // Update Human Agent Script with the conversation data
-          if (result.data && result.data.conversation) {
+          if (result.data && result.data.messages) {
             const conversationBlocks = [];
+            const messages = result.data.messages;
             
-            // Group messages into conversation blocks
-            for (let i = 0; i < result.data.conversation.length; i += 2) {
-              const userMsg = result.data.conversation[i];
-              const agentMsg = result.data.conversation[i + 1];
+            // Group messages into conversation blocks (user + bot pairs)
+            for (let i = 0; i < messages.length; i += 2) {
+              const userMsg = messages[i];
+              const botMsg = messages[i + 1];
               
               const block = {
-                Agent: agentMsg ? [agentMsg.message] : [],
-                Customer: userMsg ? [userMsg.message] : []
+                Customer: userMsg && userMsg.sender === 'user' ? [userMsg.message] : [],
+                Agent: botMsg && botMsg.sender === 'bot' ? [botMsg.message] : []
               };
               
-              conversationBlocks.push(block);
+              // Only add blocks that have at least one message
+              if (block.Customer.length > 0 || block.Agent.length > 0) {
+                conversationBlocks.push(block);
+              }
             }
             
-            Human_Agent_Script.value = conversationBlocks;
+            if (conversationBlocks.length > 0) {
+              Human_Agent_Script.value = conversationBlocks;
+            }
           }
         } else {
           conversationError.value = result.message || 'Failed to fetch conversation';
@@ -315,16 +321,10 @@ export default {
             timestamp: result.data?.timestamp ? new Date(result.data.timestamp) : new Date()
           });
 
-          // Store conversation ID if provided
-          if (result.data?.conversation_id) {
-            conversationId.value = result.data.conversation_id;
-            localStorage.setItem('conversation_id', result.data.conversation_id);
-            
-            // Fetch updated conversation after a short delay
-            setTimeout(() => {
-              fetchConversation();
-            }, 1000);
-          }
+          // Fetch updated conversation after a short delay to get the latest messages
+          setTimeout(() => {
+            fetchConversation();
+          }, 1000);
 
           // Clear input
           userMessage.value = '';
@@ -341,16 +341,12 @@ export default {
       }
     };
 
-    // Check for session ID and conversation ID on mount
+    // Check for session ID and fetch conversation on mount
     onMounted(() => {
       if (!sessionId.value) {
         console.warn('No session ID found. Please upload files in Training Admin first.');
-      }
-      
-      // Load conversation ID from localStorage
-      const storedConversationId = localStorage.getItem('conversation_id');
-      if (storedConversationId) {
-        conversationId.value = storedConversationId;
+      } else {
+        // If session ID exists, fetch the conversation
         fetchConversation();
       }
     });
@@ -358,9 +354,11 @@ export default {
     // Watch for session ID changes
     watch(sessionId, (newSessionId) => {
       if (newSessionId) {
-        // Clear previous conversation when session changes
+        // Clear previous conversation and fetch new one
         conversationId.value = null;
-        localStorage.removeItem('conversation_id');
+        chatHistory.value = [];
+        
+        // Reset to default script initially
         Human_Agent_Script.value = [
           {
             Agent: [
@@ -386,6 +384,9 @@ export default {
             Customer: []
           }
         ];
+        
+        // Fetch conversation for the new session
+        fetchConversation();
       }
     });
 
