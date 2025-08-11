@@ -40,7 +40,18 @@
     <div
       class="Human_Agent_Script w-full lg:w-1/3 max-h-[84vh] flex flex-col border border-[#E5E5E5] font-inter rounded-[12px]">
       <div class="!px-[16px] !py-[18px] border-b border-[#E5E5E5]">
-        <h3>The Human Agent Script</h3>
+        <div class="flex items-center justify-between">
+          <h3>The Human Agent Script</h3>
+          <div v-if="isLoadingConversation" class="text-[12px] text-blue-500">
+            Loading conversation...
+          </div>
+          <div v-else-if="conversationId" class="text-[12px] text-green-600">
+            Live conversation
+          </div>
+          <div v-else-if="conversationError" class="text-[12px] text-red-500">
+            {{ conversationError }}
+          </div>
+        </div>
       </div>
 
       <!-- Scrollable content -->
@@ -146,7 +157,7 @@
 
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 export default {
   name: 'Training',
@@ -155,6 +166,9 @@ export default {
     const userMessage = ref('');
     const isSending = ref(false);
     const chatHistory = ref([]);
+    const conversationId = ref(null);
+    const isLoadingConversation = ref(false);
+    const conversationError = ref('');
 
     const AI_Persona_Script = ref(
       [
@@ -212,6 +226,57 @@ export default {
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
+    const fetchConversation = async () => {
+      if (!conversationId.value) {
+        conversationError.value = 'No conversation ID available';
+        return;
+      }
+
+      isLoadingConversation.value = true;
+      conversationError.value = '';
+
+      try {
+        const response = await fetch(`https://twymcall.dev.twymx.com/api/conversation/${conversationId.value}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Update Human Agent Script with the conversation data
+          if (result.data && result.data.conversation) {
+            const conversationBlocks = [];
+            
+            // Group messages into conversation blocks
+            for (let i = 0; i < result.data.conversation.length; i += 2) {
+              const userMsg = result.data.conversation[i];
+              const agentMsg = result.data.conversation[i + 1];
+              
+              const block = {
+                Agent: agentMsg ? [agentMsg.message] : [],
+                Customer: userMsg ? [userMsg.message] : []
+              };
+              
+              conversationBlocks.push(block);
+            }
+            
+            Human_Agent_Script.value = conversationBlocks;
+          }
+        } else {
+          conversationError.value = result.message || 'Failed to fetch conversation';
+          console.error('Conversation API error:', result);
+        }
+      } catch (error) {
+        conversationError.value = 'Network error while fetching conversation';
+        console.error('Network error:', error);
+      } finally {
+        isLoadingConversation.value = false;
+      }
+    };
+
     const sendMessage = async () => {
       if (!userMessage.value.trim() || !sessionId.value || isSending.value) {
         return;
@@ -250,6 +315,17 @@ export default {
             timestamp: result.data?.timestamp ? new Date(result.data.timestamp) : new Date()
           });
 
+          // Store conversation ID if provided
+          if (result.data?.conversation_id) {
+            conversationId.value = result.data.conversation_id;
+            localStorage.setItem('conversation_id', result.data.conversation_id);
+            
+            // Fetch updated conversation after a short delay
+            setTimeout(() => {
+              fetchConversation();
+            }, 1000);
+          }
+
           // Clear input
           userMessage.value = '';
         } else {
@@ -265,10 +341,51 @@ export default {
       }
     };
 
-    // Check for session ID on mount
+    // Check for session ID and conversation ID on mount
     onMounted(() => {
       if (!sessionId.value) {
         console.warn('No session ID found. Please upload files in Training Admin first.');
+      }
+      
+      // Load conversation ID from localStorage
+      const storedConversationId = localStorage.getItem('conversation_id');
+      if (storedConversationId) {
+        conversationId.value = storedConversationId;
+        fetchConversation();
+      }
+    });
+
+    // Watch for session ID changes
+    watch(sessionId, (newSessionId) => {
+      if (newSessionId) {
+        // Clear previous conversation when session changes
+        conversationId.value = null;
+        localStorage.removeItem('conversation_id');
+        Human_Agent_Script.value = [
+          {
+            Agent: [
+              "Hi Alex, great to connect with you! I see you've recently signed up for our SmartPlanner Pro – welcome aboard! Before we dive in, can I quickly confirm that you're looking for a productivity tool that integrates with your calendar, emails, and daily routines?"
+            ],
+            Customer: [
+              "Yeah, I just want something that doesn't add to my to-do list but helps me stay ahead."
+            ]
+          },
+          {
+            Agent: [
+              "Absolutely. That's exactly what SmartPlanner does. It works with your existing tools—Google Calendar, Outlook, and Slack—to pull your tasks into one smart, prioritized dashboard.",
+              "Let me show you how it auto-suggests task blocks based on your energy levels and meeting fatigue—it's designed for busy pros like you who don't want micromanagement, just clarity."
+            ],
+            Customer: [
+              "Interesting. But what if I already use Notion?"
+            ]
+          },
+          {
+            Agent: [
+              "Great question—SmartPlanner can integrate with Notion too. In fact, a lot of our users use both. We actually pull key notes from Notion to contextualize your tasks, so you don't have to jump between tools."
+            ],
+            Customer: []
+          }
+        ];
       }
     });
 
@@ -279,8 +396,12 @@ export default {
       userMessage,
       isSending,
       chatHistory,
+      conversationId,
+      isLoadingConversation,
+      conversationError,
       sendMessage,
-      formatTime
+      formatTime,
+      fetchConversation
     };
   }
 };
