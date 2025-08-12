@@ -3,60 +3,120 @@
   <div class="practice-admin-container">
     <div class="header-section">
       <h2 class="page-title">Practice Admin</h2>
-      <p class="page-description">Upload persona and context files to create new practice sessions</p>
+      <p class="page-description">Upload persona and context files to create new practice sessions or select existing sessions</p>
     </div>
 
+    <!-- Sessions List Section -->
+    <div class="sessions-section">
+      <h3 class="section-title">Existing Sessions</h3>
+      <div class="sessions-list" v-if="sessions.length > 0">
+        <div 
+          v-for="session in sessions" 
+          :key="session.id"
+          class="session-item"
+          :class="{ 'selected': selectedSessions.includes(session.id) }"
+          @click="toggleSession(session.id)"
+        >
+          <div class="session-header">
+            <div class="session-checkbox">
+              <input 
+                type="checkbox" 
+                :checked="selectedSessions.includes(session.id)"
+                @click.stop
+                @change="toggleSession(session.id)"
+              />
+            </div>
+            <div class="session-id">{{ session.id.substring(0, 8) }}...</div>
+          </div>
+          <div class="session-details">
+            <div class="persona-section">
+              <h4>Persona:</h4>
+              <p>{{ session.persona_summary }}</p>
+            </div>
+            <div class="context-section">
+              <h4>Context:</h4>
+              <p>{{ session.context_summary }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else-if="loadingSessions" class="loading-message">
+        Loading sessions...
+      </div>
+      <div v-else class="no-sessions">
+        No sessions available.
+      </div>
+      <div v-if="selectedSessions.length > 0" class="selected-count">
+        {{ selectedSessions.length }} session(s) selected
+      </div>
+    </div>
+
+    <!-- Upload Section -->
     <div class="upload-section">
+      <h3 class="section-title">Create New Session</h3>
       <div class="upload-form">
-        <!-- Persona File Upload -->
+        <!-- Multiple Persona Files Upload -->
         <div class="file-upload-group">
-          <label class="file-label">Persona File</label>
+          <label class="file-label">Persona Files</label>
           <div class="file-input-wrapper">
             <input
               type="file"
-              id="persona-file"
-              @change="handlePersonaFile"
+              id="persona-files"
+              @change="handlePersonaFiles"
               accept=".txt,.pdf,.doc,.docx"
               class="file-input"
+              multiple
             />
-            <label for="persona-file" class="file-input-label">
+            <label for="persona-files" class="file-input-label">
               <img src="/upload.svg" alt="Upload" class="upload-icon" />
-              <span v-if="!personaFile">Choose Persona File</span>
-              <span v-else>{{ personaFile.name }}</span>
+              <span v-if="personaFiles.length === 0">Choose Persona Files</span>
+              <span v-else>{{ personaFiles.length }} file(s) selected</span>
             </label>
+          </div>
+          <div v-if="personaFiles.length > 0" class="selected-files">
+            <div v-for="(file, index) in personaFiles" :key="index" class="file-item">
+              <span>{{ file.name }}</span>
+              <button @click="removePersonaFile(index)" class="remove-file">×</button>
+            </div>
           </div>
         </div>
 
-        <!-- Context File Upload -->
+        <!-- Multiple Context Files Upload -->
         <div class="file-upload-group">
-          <label class="file-label">Context File</label>
+          <label class="file-label">Context Files</label>
           <div class="file-input-wrapper">
             <input
               type="file"
-              id="context-file"
-              @change="handleContextFile"
+              id="context-files"
+              @change="handleContextFiles"
               accept=".txt,.pdf,.doc,.docx"
               class="file-input"
+              multiple
             />
-            <label for="context-file" class="file-input-label">
+            <label for="context-files" class="file-input-label">
               <img src="/upload.svg" alt="Upload" class="upload-icon" />
-              <span v-if="!contextFile">Choose Context File</span>
-              <span v-else>{{ contextFile.name }}</span>
+              <span v-if="contextFiles.length === 0">Choose Context Files</span>
+              <span v-else>{{ contextFiles.length }} file(s) selected</span>
             </label>
+          </div>
+          <div v-if="contextFiles.length > 0" class="selected-files">
+            <div v-for="(file, index) in contextFiles" :key="index" class="file-item">
+              <span>{{ file.name }}</span>
+              <button @click="removeContextFile(index)" class="remove-file">×</button>
+            </div>
           </div>
         </div>
 
-        <!-- Upload Button -->
+        <!-- Upload Button (Currently Disabled) -->
         <div class="upload-button-section">
           <button
             @click="uploadFiles"
-            :disabled="!personaFile || !contextFile || isUploading"
-            class="upload-button"
-            :class="{ 'loading': isUploading }"
+            :disabled="true"
+            class="upload-button disabled"
           >
-            <span v-if="!isUploading">Upload Files</span>
-            <span v-else>Uploading...</span>
+            Upload Files (Coming Soon)
           </button>
+          <p class="upload-note">Multiple file upload functionality will be implemented soon</p>
         </div>
       </div>
 
@@ -70,16 +130,6 @@
           <div class="result-details">
             <p><strong>Session ID:</strong> {{ uploadResult.data.session_id }}</p>
             <p><strong>Message:</strong> {{ uploadResult.data.message }}</p>
-            <div class="summaries">
-              <div class="summary-item">
-                <h4>Persona Summary:</h4>
-                <p>{{ uploadResult.data.persona_summary }}</p>
-              </div>
-              <div class="summary-item">
-                <h4>Context Summary:</h4>
-                <p>{{ uploadResult.data.context_summary }}</p>
-              </div>
-            </div>
           </div>
         </div>
         
@@ -96,95 +146,91 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 export default {
   name: 'PracticeAdmin',
   setup() {
-    const personaFile = ref(null)
-    const contextFile = ref(null)
+    const personaFiles = ref([])
+    const contextFiles = ref([])
+    const sessions = ref([])
+    const selectedSessions = ref([])
+    const loadingSessions = ref(false)
     const isUploading = ref(false)
     const uploadResult = ref(null)
     const errorMessage = ref('')
 
-    const handlePersonaFile = (event) => {
-      const file = event.target.files[0]
-      if (file) {
-        personaFile.value = file
-        uploadResult.value = null
+    const handlePersonaFiles = (event) => {
+      const files = Array.from(event.target.files)
+      personaFiles.value = [...personaFiles.value, ...files]
+      uploadResult.value = null
+    }
+
+    const handleContextFiles = (event) => {
+      const files = Array.from(event.target.files)
+      contextFiles.value = [...contextFiles.value, ...files]
+      uploadResult.value = null
+    }
+
+    const removePersonaFile = (index) => {
+      personaFiles.value.splice(index, 1)
+    }
+
+    const removeContextFile = (index) => {
+      contextFiles.value.splice(index, 1)
+    }
+
+    const toggleSession = (sessionId) => {
+      const index = selectedSessions.value.indexOf(sessionId)
+      if (index === -1) {
+        selectedSessions.value.push(sessionId)
+      } else {
+        selectedSessions.value.splice(index, 1)
       }
     }
 
-    const handleContextFile = (event) => {
-      const file = event.target.files[0]
-      if (file) {
-        contextFile.value = file
-        uploadResult.value = null
+    const fetchSessions = async () => {
+      loadingSessions.value = true
+      try {
+        const response = await fetch('https://twymcall.dev.twymx.com/api/upload/sessions')
+        const result = await response.json()
+        
+        if (response.ok && result.success) {
+          sessions.value = result.data.sessions
+        } else {
+          console.error('Failed to fetch sessions:', result.message)
+        }
+      } catch (error) {
+        console.error('Error fetching sessions:', error)
+      } finally {
+        loadingSessions.value = false
       }
     }
 
     const uploadFiles = async () => {
-      if (!personaFile.value || !contextFile.value) {
-        return
-      }
-
-      isUploading.value = true
-      uploadResult.value = null
-      errorMessage.value = ''
-
-      try {
-        const formData = new FormData()
-        formData.append('persona', personaFile.value)
-        formData.append('context', contextFile.value)
-
-        const response = await fetch('https://twymcall.dev.twymx.com/api/upload/documents', {
-          method: 'POST',
-          body: formData
-        })
-
-        const result = await response.json()
-
-        if (response.ok && result.success) {
-          uploadResult.value = {
-            success: true,
-            data: result
-          }
-          
-          // Store session ID in localStorage for use in Practice component
-          if (result.session_id) {
-            localStorage.setItem('practice_session_id', result.session_id)
-          }
-          
-          // Reset file inputs after successful upload
-          personaFile.value = null
-          contextFile.value = null
-          document.getElementById('persona-file').value = ''
-          document.getElementById('context-file').value = ''
-        } else {
-          uploadResult.value = {
-            success: false
-          }
-          errorMessage.value = result.message || 'Upload failed. Please try again.'
-        }
-      } catch (error) {
-        uploadResult.value = {
-          success: false
-        }
-        errorMessage.value = 'Network error. Please check your connection and try again.'
-        console.error('Upload error:', error)
-      } finally {
-        isUploading.value = false
-      }
+      // Currently disabled - placeholder for future implementation
+      console.log('Upload functionality will be implemented for multiple files')
     }
 
+    onMounted(() => {
+      fetchSessions()
+    })
+
     return {
-      personaFile,
-      contextFile,
+      personaFiles,
+      contextFiles,
+      sessions,
+      selectedSessions,
+      loadingSessions,
       isUploading,
       uploadResult,
       errorMessage,
-      handlePersonaFile,
-      handleContextFile,
+      handlePersonaFiles,
+      handleContextFiles,
+      removePersonaFile,
+      removeContextFile,
+      toggleSession,
+      fetchSessions,
       uploadFiles
     }
   }
@@ -194,15 +240,14 @@ export default {
 <style scoped>
 .practice-admin-container {
   padding: 24px;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   background: #f9fafb;
-  /* min-height: 100vh; */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .header-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .page-title {
@@ -216,6 +261,118 @@ export default {
   font-size: 14px;
   color: #6b7280;
   margin: 0;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+.sessions-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.session-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.session-item:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.session-item.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.session-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.session-checkbox input {
+  margin: 0;
+}
+
+.session-id {
+  font-family: monospace;
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.session-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.persona-section, .context-section {
+  background: white;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #f3f4f6;
+}
+
+.persona-section h4, .context-section h4 {
+  color: #374151;
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.persona-section p, .context-section p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  max-height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.loading-message, .no-sessions {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-style: italic;
+}
+
+.selected-count {
+  margin-top: 16px;
+  padding: 8px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .upload-section {
@@ -278,6 +435,41 @@ export default {
   opacity: 0.7;
 }
 
+.selected-files {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.remove-file {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-file:hover {
+  background: #dc2626;
+}
+
 .upload-button-section {
   margin-top: 12px;
 }
@@ -294,17 +486,17 @@ export default {
   width: 100%;
 }
 
-.upload-button:hover:not(:disabled) {
-  background: #1d4ed8;
-}
-
-.upload-button:disabled {
+.upload-button.disabled {
   background: #9ca3af;
   cursor: not-allowed;
 }
 
-.upload-button.loading {
-  background: #6b7280;
+.upload-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  font-style: italic;
 }
 
 .result-section {
@@ -354,34 +546,6 @@ export default {
   margin: 6px 0;
   color: #166534;
   font-size: 13px;
-}
-
-.summaries {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.summary-item {
-  background: white;
-  padding: 12px;
-  border-radius: 4px;
-  border: 1px solid #bbf7d0;
-}
-
-.summary-item h4 {
-  color: #166534;
-  margin: 0 0 6px 0;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.summary-item p {
-  color: #374151;
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.4;
 }
 
 .error-message p {
