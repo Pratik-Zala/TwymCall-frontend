@@ -107,16 +107,18 @@
           </div>
         </div>
 
-        <!-- Upload Button (Currently Disabled) -->
+        <!-- Upload Button -->
         <div class="upload-button-section">
           <button
             @click="uploadFiles"
-            :disabled="true"
-            class="upload-button disabled"
+            :disabled="isUploading || personaFiles.length === 0 || contextFiles.length === 0"
+            class="upload-button"
+            :class="{ 'disabled': isUploading || personaFiles.length === 0 || contextFiles.length === 0 }"
           >
-            Upload Files (Coming Soon)
+            <span v-if="isUploading">Uploading...</span>
+            <span v-else>Upload Files</span>
           </button>
-          <p class="upload-note">Multiple file upload functionality will be implemented soon</p>
+          <p class="upload-note">Will upload the first persona file and first context file selected</p>
         </div>
       </div>
 
@@ -208,8 +210,50 @@ export default {
     }
 
     const uploadFiles = async () => {
-      // Currently disabled - placeholder for future implementation
-      console.log('Upload functionality will be implemented for multiple files')
+      if (personaFiles.value.length === 0 || contextFiles.value.length === 0) {
+        errorMessage.value = 'Please select at least one persona file and one context file'
+        uploadResult.value = { success: false }
+        return
+      }
+
+      isUploading.value = true
+      uploadResult.value = null
+      errorMessage.value = ''
+
+      try {
+        const formData = new FormData()
+        // Only send the first file of each type
+        formData.append('persona', personaFiles.value[0])
+        formData.append('context', contextFiles.value[0])
+
+        const response = await fetch('https://twymcall.dev.twymx.com/api/upload/sessions', {
+          method: 'POST',
+          body: formData
+        })
+
+        const result = await response.json()
+
+        if (response.ok && result.success) {
+          uploadResult.value = result
+          // Clear the selected files after successful upload
+          personaFiles.value = []
+          contextFiles.value = []
+          // Clear the file inputs
+          document.getElementById('persona-files').value = ''
+          document.getElementById('context-files').value = ''
+          // Refresh the sessions list
+          await fetchSessions()
+        } else {
+          uploadResult.value = { success: false }
+          errorMessage.value = result.message || 'Upload failed'
+        }
+      } catch (error) {
+        console.error('Upload error:', error)
+        uploadResult.value = { success: false }
+        errorMessage.value = 'Network error occurred during upload'
+      } finally {
+        isUploading.value = false
+      }
     }
 
     onMounted(() => {
@@ -486,9 +530,14 @@ export default {
   width: 100%;
 }
 
+.upload-button:disabled,
 .upload-button.disabled {
   background: #9ca3af;
   cursor: not-allowed;
+}
+
+.upload-button:not(:disabled):not(.disabled):hover {
+  background: #1d4ed8;
 }
 
 .upload-note {
