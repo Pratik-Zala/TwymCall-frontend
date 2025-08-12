@@ -14,14 +14,14 @@
 import Sidebar from '../components/Sidebar.vue';
 import Header from '../components/Header.vue';
 import Practice from '../components/Practice.vue';
-import PracticeAdmin from '../components/PracticeAdmin.vue';
+import TrainingAdmin from '../components/TrainingAdmin.vue';
 
 export default {
   components: {
     Sidebar,
     Header,
     Practice,
-    PracticeAdmin,
+    TrainingAdmin,
   },
 };
 </script>

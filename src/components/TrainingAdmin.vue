@@ -151,7 +151,7 @@
 import { ref, onMounted } from 'vue'
 
 export default {
-  name: 'PracticeAdmin',
+  name: 'TrainingAdmin',
   setup() {
     const personaFiles = ref([])
     const contextFiles = ref([])
