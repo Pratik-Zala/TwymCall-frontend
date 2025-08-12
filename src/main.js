@@ -3,17 +3,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import Dashboard from './components/Dashboard.vue';
 import ComingSoon from './components/ComingSoon.vue';
-import Training from './components/Training.vue';
 import MainLayout from './layouts/MainLayout.vue';
 import Simulator from './components/Simulator.vue';
 import ClientRequest from './components/ClientRequest.vue';
 import DraftEmail from './components/DraftEmail.vue';
 import ReviewClientRequest from './components/ReviewClientRequest.vue';
 import ReviewDraftDocument from './components/ReviewDraftDocument.vue';
-import TrainingAdmin from './components/TrainingAdmin.vue';
 import '../dashboard-styles.css';
 import './index.css';
 import PopUp from './components/PopUp.vue';
+import PracticeAdmin from './components/PracticeAdmin.vue';
+import Practice from './components/Practice.vue';
 
 
 const routes = [
@@ -34,7 +34,7 @@ const routes = [
       {
         path: 'simulator/training',
         name: 'Training',
-        component: Training,
+        component: ComingSoon,
       },
       {
         path:'popup',
@@ -44,12 +44,12 @@ const routes = [
       {
         path: 'simulator/practice',
         name: 'Practice',
-        component: ComingSoon,
+        component: Practice,
       },
       {
         path: 'simulator/training-admin',
         name: 'TrainingAdmin',
-        component: TrainingAdmin,
+        component: PracticeAdmin,
       },
       {
         path: 'production',
