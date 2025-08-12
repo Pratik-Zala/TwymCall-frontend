@@ -107,7 +107,7 @@
           </div>
         </div>
 
-        <!-- Upload Button -->
+        <!-- Upload Button (Currently Disabled) -->
         <div class="upload-button-section">
           <button
             @click="uploadFiles"
