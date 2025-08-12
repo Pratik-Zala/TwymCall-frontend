@@ -13,11 +13,15 @@
 <script>
 import Sidebar from '../components/Sidebar.vue';
 import Header from '../components/Header.vue';
+import Practice from '../components/Practice.vue';
+import PracticeAdmin from '../components/PracticeAdmin.vue';
 
 export default {
   components: {
     Sidebar,
     Header,
+    Practice,
+    PracticeAdmin,
   },
 };
 </script>
@@ -31,4 +35,4 @@ export default {
   background-color:#F5F5F5;
 }
 
-</style> 
+</style>
