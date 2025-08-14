@@ -10,47 +10,8 @@ on:
       - uat
 
 jobs:
-  bump-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Auto-increment version
-        run: |
-          current_version=$(node -p "require('./package.json').version")
-          IFS='.' read -r major minor patch <<< "$current_version"
-          patch=$((patch + 1))
-          if [ "$patch" -ge 10 ]; then
-            patch=0
-            minor=$((minor + 1))
-          fi
-          new_version="$major.$minor.$patch"
-          echo "Bumping version: $current_version → $new_version"
-          npm version --no-git-tag-version "$new_version"
-
-      - name: Commit and push updated version
-        env:
-          GIT_AUTH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git remote set-url origin https://Pratik-Zala:${GIT_AUTH_TOKEN}@github.com/twymai/TwymCall-frontend.git
-          git remote show origin
-          git add package.json package-lock.json
-          git commit -m "ci: bump version [skip ci]" || echo "No changes to commit"
-          git push
-
   deploy:
     name: Deploy
-    needs: bump-version
     runs-on:
       group: twymx-uat
       labels: docker
@@ -65,22 +26,22 @@ jobs:
           ref: uat
           token: ${{ secrets.GH_PAT }}
 
-      # - name: Generate .env file for the frontend
-      #   uses: SpicyPizza/create-envfile@v2.0
-      #   with:
-      #     directory: frontend
-      #     sort_keys: true
-      #     envkey_VITE_API_BASE_URL: ${{ vars.API_BASE_URL }}
-      #     envkey_VITE_SOCKET_URL: ${{ vars.SOCKET_URL }}
-      #     envkey_VITE_ENVIRONMENT: production
-      #     envkey_VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
-      #     envkey_VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
-      #     envkey_VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-      #     envkey_VITE_FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
-      #     envkey_VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
-      #     envkey_VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
-      #     envkey_VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
-      #     envkey_VITE_FIREBASE_VAPID_KEY: ${{ vars.FIREBASE_VAPID_KEY }}
+      - name: Generate .env file for the frontend
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          directory: frontend
+          sort_keys: true
+          envkey_VITE_API_BASE_URL: ${{ vars.API_BASE_URL }}
+          # envkey_VITE_SOCKET_URL: ${{ vars.SOCKET_URL }}
+          # envkey_VITE_ENVIRONMENT: production
+          # envkey_VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          # envkey_VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          # envkey_VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          # envkey_VITE_FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          # envkey_VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          # envkey_VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          # envkey_VITE_FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
+          # envkey_VITE_FIREBASE_VAPID_KEY: ${{ vars.FIREBASE_VAPID_KEY }}
 
       - name: Buid and run the app
         id: compose-up
