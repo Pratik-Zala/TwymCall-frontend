@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - uat-twymcall
+      - uat
 
 jobs:
   deploy:
@@ -15,7 +15,7 @@ jobs:
       group: twymx-uat
       labels: docker
     environment:
-      name: uat
+      name: uat-twymcall
       url: http://twymcall.dev.twymx.com
 
     steps:
