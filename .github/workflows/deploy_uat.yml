@@ -30,7 +30,7 @@ jobs:
         with:
           directory: frontend
           sort_keys: true
-          envkey_VITE_API_BASE_URL: ${{ vars.API_BASE_URL }}
+          envkey_VITE_API_URL: ${{ vars.VITE_API_URL }}
           # envkey_VITE_SOCKET_URL: ${{ vars.SOCKET_URL }}
           # envkey_VITE_ENVIRONMENT: production
           # envkey_VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
